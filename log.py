@@ -24,7 +24,7 @@ class Logger:
     @classmethod
     def get_instance(cls):
         if not cls._instance:
-            cls._instance = cls(log_level=settings.log_level).get_logger()
+            cls._instance = cls(log_level=settings.LOG_LEVEL).get_logger()
         return cls._instance
 
     def info(self, msg):

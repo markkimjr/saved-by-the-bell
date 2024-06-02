@@ -55,7 +55,7 @@ def scrape_fighters() -> List[Boxer]:
         log.error(f"ERROR OCCURRED WHILE SCRAPING FIGHTERS")
 
 
-# WBC only for now TODO: Add other organizations (WBA, IBF, WBO)
+# WBC only for now TODO: Add WBA, IBF, WBO
 def parse_boxing_res(html_source: str) -> List[Boxer]:
     all_fighters = []
     soup = load_soup(html_source=html_source)

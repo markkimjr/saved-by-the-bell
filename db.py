@@ -43,3 +43,8 @@ def bulk_insert(collection: str, data: List[Union[dict, object]]) -> None:
             batch.set(doc_ref, doc.__dict__)
     batch.commit()
 
+
+@db_transaction
+def bulk_select(collection: str) -> List[dict]:
+    docs = db.collection(collection).stream()
+    return [doc.to_dict() for doc in docs]

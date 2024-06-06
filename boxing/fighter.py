@@ -1,9 +1,9 @@
 import traceback
-import bs4
 from typing import List
 from dataclasses import dataclass
 
 from http_request import get_request
+from util import load_soup
 from db import bulk_insert
 from log import Logger
 
@@ -46,7 +46,7 @@ def scrape_fighters() -> List[Boxer]:
         res = get_request(url=URL, headers=HEADERS)
         if res.status_code == 200:
             html_source = res.text
-            fighters = parse_boxing_res(html_source=html_source)
+            fighters = parse_fighters(html_source=html_source)
             bulk_insert(collection=COLLECTION, data=fighters)
             return fighters
     except Exception as e:
@@ -55,8 +55,8 @@ def scrape_fighters() -> List[Boxer]:
 
 
 # WBC only for now TODO: Add WBA, IBF, WBO
-def parse_boxing_res(html_source: str) -> List[Boxer]:
-    all_fighters = []
+def parse_fighters(html_source: str) -> List[Boxer]:
+    pasred_fighters = []
     soup = load_soup(html_source=html_source)
     rankings_section = soup.find("section", {"class": "rankings"})
     for i in range(BOXING_DIVISIONS):
@@ -78,7 +78,7 @@ def parse_boxing_res(html_source: str) -> List[Boxer]:
                         if name != "VACANT":
                             boxer = Boxer(name=name, division=division, is_champ=True, current_rank=0)
                             log.info(f"Scraped fighter: {name} - {division} CHAMPION")
-                            all_fighters.append(boxer)
+                            pasred_fighters.append(boxer)
                             continue
 
                     name = td.text.strip()
@@ -87,14 +87,10 @@ def parse_boxing_res(html_source: str) -> List[Boxer]:
                         continue
                     current_rank = x
                     boxer = Boxer(name=name, division=division, is_champ=False, current_rank=current_rank)
-                    all_fighters.append(boxer)
+                    pasred_fighters.append(boxer)
                     log.info(f"Scraped fighter: {name} - {division} - rank: {current_rank}")
 
-    return all_fighters
-
-
-def load_soup(html_source: str) -> bs4.BeautifulSoup:
-    return bs4.BeautifulSoup(html_source, 'lxml')
+    return pasred_fighters
 
 
 if __name__ == "__main__":

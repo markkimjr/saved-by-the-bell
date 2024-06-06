@@ -5,3 +5,4 @@ google-cloud-firestore~=2.3.0
 pydotenv~=0.0.7
 python-dotenv~=1.0.1
 pytz~=2024.1
+flask~=3.0.3
